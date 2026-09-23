@@ -75,10 +75,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
-        with:
-          platforms: arm64
+      # Enable when ARM64 production images are required.
+      # - name: Set up QEMU
+      #   uses: docker/setup-qemu-action@v4
+      #   with:
+      #     platforms: arm64
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -95,7 +96,9 @@ jobs:
         with:
           context: .
           target: frankenphp_prod
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
+          # Enable ARM64 together with the QEMU step above when required:
+          # platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
           cache-from: type=gha,scope=production
