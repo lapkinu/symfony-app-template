@@ -11,10 +11,24 @@
 {$CADDY_EXTRA_CONFIG}
 
 {$MAIN_SERVER_NAME:main.localhost} {
-    respond "Application is under development" 200
+    root * /srv/landing
+
+	header {
+		X-Robots-Tag "noindex, nofollow"
+	}
+
+	file_server
 }
 
 {$SERVER_NAME:localhost} {
+	@protected {
+		not path /health
+	}
+
+	basic_auth @protected {
+		{$BASIC_AUTH_USERNAME} {$BASIC_AUTH_PASSWORD_HASH}
+	}
+
 	log {
 		{$CADDY_SERVER_LOG_OPTIONS}
 		# Redact the authorization query parameter that can be set by Mercure
