@@ -148,6 +148,11 @@ RUN <<-EOF
 EOF
 
 COPY --link --exclude=var --from=frankenphp_prod_builder /app /app
+
+# Public pre-launch landing page
+COPY --link --from=frankenphp_prod_builder \
+    /app/infrastructure/landing /srv/landing
+
 # Group 0 + g=u for arbitrary-UID runtimes (e.g. OpenShift).
 COPY --chown=www-data:0 --from=frankenphp_prod_builder /app/var /app/var
 RUN chmod g=u /app/var
