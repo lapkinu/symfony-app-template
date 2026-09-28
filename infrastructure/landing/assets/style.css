@@ -80,12 +80,37 @@ h1 {
     font-size: 0.875rem;
 }
 
+.development-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .status-dot {
-    width: 0.625rem;
-    height: 0.625rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    flex: 0 0 auto;
     border-radius: 50%;
-    background: #65d98b;
-    box-shadow: 0 0 1rem rgba(101, 217, 139, 0.45);
+    background: #22c55e;
+    animation: status-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes status-pulse {
+    0%,
+    100% {
+        opacity: 0.35;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .status-dot {
+        animation: none;
+        opacity: 1;
+    }
 }
 
 @media (max-width: 40rem) {
