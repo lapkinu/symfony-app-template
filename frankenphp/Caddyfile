@@ -1,6 +1,8 @@
 {
 	skip_install_trust
 
+	order basic_auth before rewrite
+
 	{$CADDY_GLOBAL_OPTIONS}
 
 	frankenphp {
