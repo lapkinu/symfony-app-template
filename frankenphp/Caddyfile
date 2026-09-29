@@ -10,6 +10,16 @@
 	}
 }
 
+(basic_auth) {
+        @protected {
+                not path /health
+        }
+
+        basic_auth @protected {
+                {$BASIC_AUTH_USERNAME} {$BASIC_AUTH_PASSWORD_HASH}
+        }
+}
+
 {$CADDY_EXTRA_CONFIG}
 
 {$MAIN_SERVER_NAME:main.localhost} {
@@ -23,13 +33,7 @@
 }
 
 {$SERVER_NAME:localhost} {
-	@protected {
-		not path /health
-	}
-
-	basic_auth @protected {
-		{$BASIC_AUTH_USERNAME} {$BASIC_AUTH_PASSWORD_HASH}
-	}
+	{$BASIC_AUTH_CONFIG:import basic_auth}
 
 	log {
 		{$CADDY_SERVER_LOG_OPTIONS}
