@@ -49,7 +49,7 @@ body {
 .eyebrow {
     margin: 0 0 1.5rem;
     color: #8fa5ff;
-    font-size: 0.875rem;
+    font-size: 2rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -74,10 +74,9 @@ h1 > span {
     display: inline-block;
     width: 0.16em;
     height: 0.16em;
-    margin-left: 0.18em;
+    margin-left: 0.12em;
     border-radius: 50%;
     background: #22c55e;
-    vertical-align: 0.15em;
     animation: status-pulse 2.5s ease-in-out infinite;
 }
 
