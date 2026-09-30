@@ -14,6 +14,6 @@ final class HomeControllerTest extends WebTestCase
         $client->request('GET', '/');
 
         self::assertResponseIsSuccessful();
-        self::assertSelectorTextContains('h1', 'Development');
+        self::assertSelectorTextContains('div', 'Healthy');
     }
 }
