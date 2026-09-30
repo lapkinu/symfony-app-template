@@ -101,7 +101,7 @@ h1 {
     height: 0.5rem;
     border-radius: 50%;
     background: #22c55e;
-    animation: status-pulse 2.5s ease-in-out infinite;
+    animation: status-pulse 5s ease-in-out infinite;
 }
 
 .status-card__details {
@@ -134,7 +134,7 @@ h1 {
 @keyframes status-pulse {
     0%,
     100% {
-        opacity: 0.35;
+        opacity: 0.15;
     }
 
     50% {
