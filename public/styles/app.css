@@ -47,10 +47,10 @@ body {
 .eyebrow {
     margin: 0 0 1.5rem;
     color: #8fa5ff;
-    font-size: 0.875rem;
+    font-size: 1.75rem;
     font-weight: 700;
     letter-spacing: 0.12em;
-    text-transform: uppercase;
+    text-transform: uppercase
 }
 
 h1 {
