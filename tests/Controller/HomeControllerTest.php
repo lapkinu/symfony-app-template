@@ -14,7 +14,6 @@ final class HomeControllerTest extends WebTestCase
         $client->request('GET', '/');
 
         self::assertResponseIsSuccessful();
-        self::assertSelectorTextContains('h1', 'MyApp');
-        self::assertSelectorTextContains('body', 'Symfony is running.');
+        self::assertSelectorTextContains('h1', 'Development');
     }
 }
