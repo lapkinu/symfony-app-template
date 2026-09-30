@@ -1,11 +1,46 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}MyApp — Development{% endblock %}
+{% block title %}tarp.lt — Development{% endblock %}
 
 {% block body %}
-    <main>
-        <h1>MyApp</h1>
-        <p>Development environment</p>
-        <p>Symfony is running...</p>
+    <main class="page">
+        <section class="hero">
+            <p class="eyebrow">tarp.lt</p>
+
+            <h1>Development<br>environment.</h1>
+
+            <p class="description">
+                Private development environment for tarp.lt.
+                The application is up and running.
+            </p>
+
+            <div class="status-card">
+                <div class="status-card__header">
+                    <span>Application</span>
+
+                    <span class="status">
+                        <i class="status__dot" aria-hidden="true"></i>
+                        Online
+                    </span>
+                </div>
+
+                <dl class="status-card__details">
+                    <div>
+                        <dt>Framework</dt>
+                        <dd>Symfony</dd>
+                    </div>
+
+                    <div>
+                        <dt>Environment</dt>
+                        <dd>Production</dd>
+                    </div>
+
+                    <div>
+                        <dt>Status</dt>
+                        <dd>Healthy</dd>
+                    </div>
+                </dl>
+            </div>
+        </section>
     </main>
 {% endblock %}
