@@ -28,21 +28,49 @@ For a push to `main`, the deployment pipeline performs the following steps:
 
 The production server does not clone the application repository and does not build the application image. It runs the image that was already built and published by CI.
 
+## Application and Infrastructure Contract
+
+The application and companion infrastructure repositories use the following shared values:
+
+```text
+Application repository                    Ansible infrastructure
+──────────────────────────────────────────────────────────────────
+DEPLOY_APP                          <-> deployment_app_name
+DEPLOY_USER                         <-> deployment_user
+GHCR application repository         <-> deployment_image_repository
+DEPLOY_SSH_PRIVATE_KEY              <-> deploy_ci_ssh_public_key pair
+/health                             <-> deployment_healthcheck_path
+```
+
+With the default infrastructure configuration:
+
+```text
+DEPLOY_USER=deploy
+```
+
+`DEPLOY_APP` must exactly match `deployment_app_name`.
+
+The production image published by this repository must be the same GHCR
+repository configured as `deployment_image_repository` in the infrastructure
+repository.
+
 ## Deployment Is Opt-in
 
 Creating a repository from this template does not automatically enable production deployment.
 
 For a normal push to `main`, application CI and production image publishing run automatically. The production deployment job is skipped until deployment is explicitly enabled.
 
-Enable deployment with the GitHub repository variable:
+Enable deployment by creating the following **repository-level Actions variable** under **Settings → Secrets and variables → Actions → Variables**:
 
 ```text
 DEPLOY_ENABLED=true
 ```
 
-The comparison is intentionally strict. Missing values, `false`, `yes`, `1`, or other values do not enable deployment.
+Do not configure `DEPLOY_ENABLED` as a variable of the `production` GitHub Environment. The deployment job evaluates this repository-level variable before entering the `production` environment.
 
-This makes a newly created repository fail closed: it can build production artifacts without having permission to deploy them anywhere.
+The comparison is intentionally strict. If the variable is missing or its value is anything other than the exact string `true`, the deployment job is skipped.
+
+This makes a newly created repository fail closed: it can build and publish production artifacts without being allowed to deploy them anywhere.
 
 ## GitHub Production Environment
 
@@ -60,6 +88,32 @@ DEPLOY_USER
 DEPLOY_APP
 ```
 
+`DEPLOY_HOST` is the production server address reachable from GitHub Actions.
+
+`DEPLOY_USER` must match `deployment_user` in the companion infrastructure
+repository. With its default configuration:
+
+```text
+DEPLOY_USER=deploy
+```
+
+`DEPLOY_APP` must exactly match `deployment_app_name` in the companion
+infrastructure repository and must satisfy:
+
+```text
+[a-z0-9][a-z0-9-]*
+```
+
+For example:
+
+```text
+deployment_app_name=example-app
+DEPLOY_APP=example-app
+```
+
+The deployment workflow validates that the release identifier is a full
+40-character lowercase hexadecimal Git SHA.
+
 Configure the following environment secrets:
 
 ```text
@@ -67,23 +121,38 @@ DEPLOY_SSH_PRIVATE_KEY
 DEPLOY_SSH_KNOWN_HOSTS
 ```
 
-`DEPLOY_APP` must match:
+### Deployment SSH private key
 
-```text
-[a-z0-9][a-z0-9-]*
-```
+`DEPLOY_SSH_PRIVATE_KEY` is the private half of the dedicated CI deployment
+SSH key pair.
 
-The deployment workflow also validates that the release identifier is a full 40-character lowercase hexadecimal Git SHA.
+The corresponding public key is configured in the companion Ansible repository
+as `deploy_ci_ssh_public_key` and installed in the deployment user's
+`authorized_keys`.
 
-After the server has been provisioned and the GitHub Environment has been configured, enable deployment with the repository variable:
+The private key must be copied into the GitHub Environment secret in its
+original OpenSSH format, including the `BEGIN` and `END` lines. Do not
+base64-encode it or commit it to the repository.
 
-```text
-DEPLOY_ENABLED=true
-```
+### SSH host verification
+
+`DEPLOY_SSH_KNOWN_HOSTS` contains the verified public SSH host key for
+`DEPLOY_HOST`.
+
+It allows GitHub Actions to verify that it is connecting to the expected VPS.
+It is not the deployment user's public key and it is not a server private key.
+
+The companion infrastructure documentation describes how to obtain the host
+key and verify its fingerprint through an already trusted administrator
+connection.
+
+After the server has been provisioned and the `production` GitHub Environment
+has been fully configured, enable deployment by setting the repository-level
+`DEPLOY_ENABLED` variable described above to `true`.
 
 ## SSH Contract
 
-GitHub Actions connects using the configured deployment user and executes:
+GitHub Actions connects using `DEPLOY_USER` and executes:
 
 ```text
 sudo -n /usr/local/sbin/deploy-<DEPLOY_APP> '<40-character-sha>'
@@ -92,20 +161,20 @@ sudo -n /usr/local/sbin/deploy-<DEPLOY_APP> '<40-character-sha>'
 For example, if:
 
 ```text
-DEPLOY_APP=my-app
+DEPLOY_APP=example-app
 ```
 
 the expected server-side command is:
 
 ```text
-/usr/local/sbin/deploy-my-app
+/usr/local/sbin/deploy-example-app
 ```
 
 The application workflow does not require the deployment user to have unrestricted sudo access or direct Docker access.
 
 The server provisioning layer is responsible for installing the deployment wrapper and granting only the required sudo permission.
 
-SSH host verification is strict. `DEPLOY_SSH_KNOWN_HOSTS` must contain the expected server host key.
+SSH host verification is strict. `DEPLOY_SSH_KNOWN_HOSTS` must contain the verified server host key.
 
 ## Image Contract
 
@@ -118,6 +187,9 @@ ghcr.io/<owner>/<repository>:<sha>
 Deployments use the exact SHA tag.
 
 Mutable tags such as `latest` are not part of the deployment contract.
+
+The companion infrastructure repository's `deployment_image_repository` must
+refer to this same GHCR application repository.
 
 The server runs the already-built image. Building application source on the production server is outside this deployment model.
 
@@ -138,9 +210,27 @@ The production Compose configuration uses required-variable interpolation and fa
 
 `BASIC_AUTH_PASSWORD_HASH` contains the password hash consumed by Caddy Basic Auth.
 
+The plaintext Basic Auth password is chosen when provisioning the
+infrastructure and is not the same credential as the Ansible Vault password.
+
 When a Compose environment file is generated by deployment tooling, literal `$` characters in the password hash must be preserved according to Docker Compose environment-file interpolation rules.
 
+The companion Ansible template accepts the raw bcrypt hash and performs the
+escaping required by Docker Compose. Do not manually replace `$` with `$$`
+before storing that hash in Ansible Vault.
+
 Do not commit real production values to `.env`, `.env.dev`, Compose files, or other tracked files.
+
+Changing a runtime secret or environment value on the server does not modify
+the environment of an already running container. The application container
+must be recreated through the deployment mechanism before the new runtime
+values take effect.
+
+A runtime-only configuration change does not inherently require a new
+application commit: an already published immutable SHA may be deployed again.
+The exact same-SHA container recreation behavior is owned by the server-side
+deployment implementation and should be verified before relying on this
+operation for secret rotation.
 
 ## Application Hosts
 
@@ -156,6 +246,14 @@ SERVER_NAME
 `SERVER_NAME` serves the Symfony application from `/app/public`.
 
 The application host enables Basic Auth by default in production. The local development override disables Basic Auth.
+
+Production deployment expects the configured hostnames to resolve to the
+production VPS so that HTTPS routing and deployment health validation can
+operate against the intended host.
+
+For development without production DNS, use the local
+`landing.localhost` and `dev.localhost` configuration instead of treating
+placeholder domains as production hostnames.
 
 ## Pre-launch Mode
 
@@ -261,6 +359,14 @@ The intended companion repository is `ansible-vps-template`.
 
 The application and infrastructure repositories are independent. The application template builds and publishes immutable GHCR images and initiates deployments. The infrastructure template provisions the VPS and implements the server-side deployment command.
 
-The interface between them is deliberately small: an application name, an immutable Git SHA release identifier, the corresponding GHCR image, and the server-side deployment command.
+The primary interface between them is:
+
+```text
+DEPLOY_APP               <-> deployment_app_name
+DEPLOY_USER              <-> deployment_user
+GHCR repository          <-> deployment_image_repository
+DEPLOY_SSH_PRIVATE_KEY   <-> deploy_ci_ssh_public_key key pair
+GET /health              <-> deployment_healthcheck_path
+```
 
 Keeping this interface explicit allows application development and server provisioning to evolve independently.
