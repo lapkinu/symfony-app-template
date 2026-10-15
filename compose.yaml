@@ -5,6 +5,8 @@ services:
     environment:
       SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
       MAIN_SERVER_NAME: ${MAIN_SERVER_NAME:-main.localhost}
+      LANDING_CONFIG: "${LANDING_CONFIG-import landing.Caddyfile}"
+      BASIC_AUTH_CONFIG: "${BASIC_AUTH_CONFIG-import basic_auth}"
       DEFAULT_URI: https://${SERVER_NAME:-localhost}:${HTTPS_PORT:-443}
       MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
       MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
