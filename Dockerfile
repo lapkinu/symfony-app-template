@@ -42,6 +42,7 @@ ENV PHP_INI_SCAN_DIR=":$PHP_INI_DIR/app.conf.d"
 COPY --link frankenphp/conf.d/10-app.ini $PHP_INI_DIR/app.conf.d/
 COPY --link --chmod=755 frankenphp/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 COPY --link frankenphp/Caddyfile /etc/frankenphp/Caddyfile
+COPY --link frankenphp/landing.Caddyfile /etc/frankenphp/landing.Caddyfile
 
 ENTRYPOINT ["docker-entrypoint"]
 
@@ -131,6 +132,7 @@ COPY --from=frankenphp_prod_builder /usr/local/etc/php/php.ini /usr/local/etc/ph
 COPY --from=frankenphp_prod_builder /usr/local/etc/php/app.conf.d /usr/local/etc/php/app.conf.d
 
 COPY --from=frankenphp_prod_builder /etc/frankenphp/Caddyfile /etc/frankenphp/Caddyfile
+COPY --from=frankenphp_prod_builder /etc/frankenphp/landing.Caddyfile /etc/frankenphp/landing.Caddyfile
 
 # CA certificates for TLS, file/libmagic for Symfony MIME type detection
 COPY --from=frankenphp_prod_builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

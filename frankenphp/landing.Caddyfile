@@ -1,0 +1,9 @@
+{$MAIN_SERVER_NAME:main.localhost} {
+	root * /srv/landing
+
+	header {
+		X-Robots-Tag "noindex, nofollow"
+	}
+
+	file_server
+}

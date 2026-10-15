@@ -22,15 +22,7 @@
 
 {$CADDY_EXTRA_CONFIG}
 
-{$MAIN_SERVER_NAME:main.localhost} {
-    root * /srv/landing
-
-	header {
-		X-Robots-Tag "noindex, nofollow"
-	}
-
-	file_server
-}
+{$LANDING_CONFIG:import landing.Caddyfile}
 
 {$SERVER_NAME:localhost} {
 	{$BASIC_AUTH_CONFIG:import basic_auth}
