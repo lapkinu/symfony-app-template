@@ -39,6 +39,8 @@ DEPLOY_APP                          <-> deployment_app_name
 DEPLOY_USER                         <-> deployment_user
 GHCR application repository         <-> deployment_image_repository
 DEPLOY_SSH_PRIVATE_KEY              <-> deploy_ci_ssh_public_key pair
+MAIN_SERVER_NAME                    <-> deployment_main_server_name
+SERVER_NAME                         <-> deployment_server_name
 /health                             <-> deployment_healthcheck_path
 ```
 
@@ -206,7 +208,10 @@ BASIC_AUTH_PASSWORD_HASH
 CADDY_MERCURE_JWT_SECRET
 ```
 
-The production Compose configuration uses required-variable interpolation and fails if these values are missing.
+The production image build does not require these runtime values. When running
+the production container with Compose, include `compose.prod.runtime.yaml`; its
+required-variable interpolation fails if any of these values is missing.
+Supply the values through the environment or an untracked Compose `--env-file`.
 
 `BASIC_AUTH_PASSWORD_HASH` contains the password hash consumed by Caddy Basic Auth.
 

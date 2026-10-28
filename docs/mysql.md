@@ -1,7 +1,9 @@
 # Using MySQL
 
 The Docker configuration of this repository is extensible thanks to Flex recipes.
-By default, the recipe installs PostgreSQL.
+Doctrine ORM and a database service are not enabled in this repository by default.
+Installing `symfony/orm-pack` applies its Flex recipe, which configures Doctrine
+and adds a PostgreSQL service.
 
 If you prefer to work with MySQL, follow these steps:
 

@@ -110,8 +110,22 @@ to inject options block, directive or configuration.
 
 > [!TIP]
 >
-> All the following environment variables can be defined in your `.env` file
-> at the root of the project to keep them persistent at each startup.
+> Values in the root `.env` file are available for Compose interpolation, but
+> Compose passes only variables listed under `services.php.environment` into the
+> container. The Compose files pass the Caddy, FrankenPHP, Mercure algorithm,
+> and Mercure directive variables in this table. The development override
+> defaults `FRANKENPHP_WORKER_CONFIG` to `watch` and
+> `MERCURE_EXTRA_DIRECTIVES` to `playground`. The publisher and subscriber
+> JWT key variables are set from the shared `CADDY_MERCURE_JWT_SECRET`; setting
+> the individual `MERCURE_*_JWT_KEY` variables in `.env` does not override them.
+> To customize `CADDY_MERCURE_JWT_SECRET`, define it in `.env`:
+>
+> ```dotenv
+> CADDY_MERCURE_JWT_SECRET=replace-with-a-local-secret
+> ```
+>
+> To customize `FRANKENPHP_WORKER_CONFIG`, define it in `.env`; the development
+> override uses that value and falls back to `watch`.
 
 <!-- markdownlint-disable MD013 -->
 
