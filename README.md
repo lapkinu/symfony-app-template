@@ -349,7 +349,11 @@ BASIC_AUTH_PASSWORD_HASH
 CADDY_MERCURE_JWT_SECRET
 ```
 
-Missing required values cause Docker Compose configuration to fail before the application container is started.
+The production image can be built without these runtime values. When starting
+the production container with Compose, include `compose.prod.runtime.yaml`;
+Docker Compose then fails before starting the container if any required value
+is missing. Supply secrets through the deployment environment or an untracked
+Compose environment file, never through tracked files or image build arguments.
 
 Changing runtime configuration on the server does not automatically change the environment of an already running container.  
 The container must be recreated through the deployment mechanism before new values take effect.
