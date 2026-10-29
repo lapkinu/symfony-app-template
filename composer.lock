@@ -4980,16 +4980,16 @@
         },
         {
             "name": "symfony/browser-kit",
-            "version": "v8.1.5",
+            "version": "v8.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/browser-kit.git",
-                "reference": "f6766c9fb232e72897d6d55cf8f6aec38db2dbbf"
+                "reference": "bea5590ad99da19e537a782ca5557ecc3baae938"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/browser-kit/zipball/f6766c9fb232e72897d6d55cf8f6aec38db2dbbf",
-                "reference": "f6766c9fb232e72897d6d55cf8f6aec38db2dbbf",
+                "url": "https://api.github.com/repos/symfony/browser-kit/zipball/bea5590ad99da19e537a782ca5557ecc3baae938",
+                "reference": "bea5590ad99da19e537a782ca5557ecc3baae938",
                 "shasum": ""
             },
             "require": {
@@ -4999,6 +4999,7 @@
             "require-dev": {
                 "symfony/css-selector": "^7.4|^8.0",
                 "symfony/http-client": "^7.4|^8.0",
+                "symfony/http-foundation": "^7.4|^8.0",
                 "symfony/mime": "^7.4|^8.0",
                 "symfony/process": "^7.4|^8.0"
             },
@@ -5028,7 +5029,7 @@
             "description": "Simulates the behavior of a web browser, allowing you to make requests, click on links and submit forms programmatically",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/browser-kit/tree/v8.1.5"
+                "source": "https://github.com/symfony/browser-kit/tree/v8.1.10"
             },
             "funding": [
                 {
@@ -5048,7 +5049,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-21T17:47:34+00:00"
+            "time": "2026-10-20T19:26:02+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -5121,16 +5122,16 @@
         },
         {
             "name": "symfony/dom-crawler",
-            "version": "v8.1.5",
+            "version": "v8.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "94f70e1b2e5b7b8f8618871fd9eaad3e39e9f03d"
+                "reference": "aa0674b52e1bd00502756fbaba8c982b446472e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/94f70e1b2e5b7b8f8618871fd9eaad3e39e9f03d",
-                "reference": "94f70e1b2e5b7b8f8618871fd9eaad3e39e9f03d",
+                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/aa0674b52e1bd00502756fbaba8c982b446472e6",
+                "reference": "aa0674b52e1bd00502756fbaba8c982b446472e6",
                 "shasum": ""
             },
             "require": {
@@ -5167,7 +5168,7 @@
             "description": "Eases DOM navigation for HTML and XML documents",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/dom-crawler/tree/v8.1.5"
+                "source": "https://github.com/symfony/dom-crawler/tree/v8.1.10"
             },
             "funding": [
                 {
@@ -5187,7 +5188,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-21T17:47:34+00:00"
+            "time": "2026-10-25T14:40:25+00:00"
         },
         {
             "name": "symfony/maker-bundle",
